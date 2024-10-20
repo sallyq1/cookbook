@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Recipe {
+  id               Int       @id @default(autoincrement())
+  label            String    // Recipe name
+  image            String?   // Image URL
+  uri              String    // Unique identifier from Edamam API
+  source           String?   // Source (e.g., Honest Cooking)
+  url              String?   // Original URL of the recipe
+  yield            Int?      // Number of servings
+  dietLabels       String[]  // Diet labels (array of strings)
+  healthLabels     String[]  // Health labels (array of strings)
+  cautions         String[]  // Caution labels (array of strings)
+  ingredientLines  String[]  // Ingredients in string form
+  ingredients      Json      // Ingredients (stored as JSON)
+  calories         Float?    // Total calories
+  totalTime        Int?      // Total time in minutes
+  cuisineType      String[]  // Cuisine type (array of strings)
+  mealType         String[]  // Meal type (array of strings)
+  dishType         String[]  // Dish type (array of strings)
+  totalNutrients   Json      // Nutritional information (stored as JSON)
+  totalDaily       Json      // Daily values (stored as JSON)
+  userId           Int?      // Foreign key to User
+  user             User?     @relation(fields: [userId], references: [id]) // Optional relation to User
+  createdAt        DateTime  @default(now())
+}
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  recipes   Recipe[]  // One-to-many relation, a user can have many recipes
+}
